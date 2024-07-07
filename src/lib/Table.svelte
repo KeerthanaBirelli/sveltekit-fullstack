@@ -1,5 +1,13 @@
 <script>
     export let names
+
+	let showUpdateForm = false;
+    let currentUserId = 0;
+
+	function openUpdateForm(userId) {
+        currentUserId = userId;
+        showUpdateForm = true;
+    }
 </script>
 
 <div
@@ -22,13 +30,79 @@
 						<p class="font-medium pl-5 text-gray-500 pt-0">{user.email}</p>                        
 					</div>
 				</div>
+              				
+				<div class="flex items-center space-x-4">
+					
+				<div>
+	
+                    <button type="submit"  class="bg-yellow-500 hover:bg-blue-700 text-white font-bold px-2 rounded float-right" on:click={() => openUpdateForm(user.id)} >
+						<!-- on:click={() => openUpdateModal(user.id)} -->
+                        Update
+                    </button>
+				</div>
+
+				
                 <form method="POST" action="/profiles?/delete">
                 <input type="hidden" name="id" id="id" value={user.id}>
                 <button type="submit">
-                    <img class="w-4 float-right" src="./trash-can.svg" alt="delete"/>
+                    <img class="w-4" src="./trash-can.svg" alt="delete"/>
                 </button>
                 </form>
+				
+					
+				</div>
+				
 			</div>
 		{/each}
 	</div>
 </div>
+
+<!-- Update Modal -->
+{#if showUpdateForm}
+    <div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-md w-96">
+            <h2 class="text-xl font-semibold mb-4">Update User</h2>
+            <form method="POST" action="/profiles?/update">
+                <input type="hidden" name="id" id="id" value={currentUserId}>
+                <div class="flex flex-wrap -mx-3 mb-2">
+                  <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label
+                      class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                      for="grid-city"
+                    >
+                      Name
+                    </label>
+                    <input
+                      class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      id="name"
+                      type="text"
+                      placeholder="Enter name"
+                      name="name"
+                    />
+                  </div>
+                  <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label
+                      class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                      for="grid-city"
+                    >
+                      Email
+                    </label>
+                    <input
+                      class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      id="email"
+                      type="text"
+                      placeholder="Enter email"
+                      name="email"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    class="bg-yellow-500 hover:bg-blue-700 text-white font-bold mt-5 ml-2 px-2 rounded "
+                  >
+                    Update User
+                  </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{/if}

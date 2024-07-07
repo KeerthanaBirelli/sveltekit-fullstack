@@ -1,9 +1,9 @@
 // import { error } from '@sveltejs/kit';
 import { createPool, sql } from '@vercel/postgres'
-import { POSTGRES_URL } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 
 export async function load() {
-  const db = createPool({ connectionString: POSTGRES_URL })
+  const db = createPool({ connectionString: env.POSTGRES_URL })
 
   try {
     const { rows: names } = await db.query('SELECT * FROM names')
@@ -24,7 +24,7 @@ export async function load() {
 }
 
 async function seed() {
-  const db = createPool({ connectionString: POSTGRES_URL })
+  const db = createPool({ connectionString: env.POSTGRES_URL })
   const client = await db.connect();
   const createTable = await client.sql`CREATE TABLE IF NOT EXISTS names (
       id SERIAL PRIMARY KEY,
@@ -64,25 +64,26 @@ async function seed() {
 /** @type {import('./$types').Actions} */
 export const actions = {
 	
-  // update: async ({ request }) => {
-  //   const data = await request.formData();
-  //   const db = createPool({ connectionString: POSTGRES_URL })
-  //   const client = await db.connect();
+  update: async ({ request }) => {
+    const data = await request.formData();
+    const db = createPool({ connectionString: env.POSTGRES_URL })
+    const client = await db.connect();
 
-  //   const email = data.get('email');
-	// 	const name = data.get('name');
+    const id = data.get('id');
+    const email = data.get('email');
+    const name = data.get('name');
 
-  //   const updateUser = await client.sql`
-  //   UPDATE names
-  //   SET email = ${email}, name = ${name}
-  //   WHERE     ;`
-	
-	// 	return { success: true };
-	// },
+    const updateUser = await client.sql`
+    UPDATE names
+    SET email = ${email}, name = ${name}
+    WHERE id = ${id};`
+
+    return { success: true };
+  },
 
   delete: async ({ request }) => {
     const data = await request.formData();
-    const db = createPool({ connectionString: POSTGRES_URL })
+    const db = createPool({ connectionString: env.POSTGRES_URL })
     const client = await db.connect();
 
     const id = data.get('id');
@@ -96,7 +97,7 @@ export const actions = {
 
 	create: async ({request}) => {
 		const data = await request.formData();
-    const db = createPool({ connectionString: POSTGRES_URL })
+    const db = createPool({ connectionString: env.POSTGRES_URL })
     const client = await db.connect();
 
     const email = data.get('email');
